@@ -37,6 +37,11 @@ void workerThreadStart(WorkerArgs * const args) {
     int numRows = args->height / args->numThreads;
     int startRow = args->threadId * numRows;
 
+    // Handle rounding 
+    if (args->threadId == args->numThreads - 1){
+        numRows = args->height - startRow;
+    }
+
 
     printf("Hello world from thread %d\n", args->threadId);
 
