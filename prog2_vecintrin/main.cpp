@@ -286,8 +286,8 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
     }
 
     _cs149_vgt_float(maskClamp, result, clamp, maskInputs);
-    maskNonZero = _cs149_mask_not(maskZero);
-    maskClamp = _cs149_mask_and(maskClamp, maskNonZero);
+    // maskNonZero = _cs149_mask_not(maskZero);
+    // maskClamp = _cs149_mask_and(maskClamp, maskNonZero);
     _cs149_vset_float(result, clampValue, maskClamp);
 
     // set output all at once
