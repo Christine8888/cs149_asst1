@@ -28,7 +28,7 @@ extern void mandelbrotSerial(
 extern void mandelbrotSerialInterleaved(
     float x0, float y0, float x1, float y1,
     int width, int height,
-    int startRow, int skipRows,
+    int startRow, int s,
     int maxIterations,
     int output[]);
 
