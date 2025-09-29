@@ -71,7 +71,7 @@ void workerThreadStartNaive(WorkerArgs * const args) {
 
     auto end = std::chrono::high_resolution_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    printf("Thread %d took %lld ms\n", args->threadId, ms);
+    printf("Thread %d took %ld ms\n", args->threadId, ms);
 }
 
 void workerThreadStartInterleaved(WorkerArgs * const args) {
@@ -83,13 +83,13 @@ void workerThreadStartInterleaved(WorkerArgs * const args) {
     // half of the image and thread 1 could compute the bottom half.
     auto start = std::chrono::high_resolution_clock::now();
 
-    printf("Hello world from thread %d\n", args->threadId);
+    // printf("Hello world from thread %d\n", args->threadId);
 
     mandelbrotSerialInterleaved(args->x0, args->y0, args->x1, args->y1, args->width, args->height, args->threadId, args->numThreads, args->maxIterations, args->output);
 
     auto end = std::chrono::high_resolution_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    printf("Thread %d took %lld ms\n", args->threadId, ms);
+    // printf("Thread %d took %ld ms\n", args->threadId, ms);
 }
 
 //
