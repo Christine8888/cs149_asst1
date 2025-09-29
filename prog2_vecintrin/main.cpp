@@ -252,7 +252,7 @@ void clampedExpSerial(float* values, int* exponents, float* output, int N) {
 void clampedExpVector(float* values, int* exponents, float* output, int N) {
   __cs149_vec_float v;
   __cs149_vec_int e;
-  __cs149_vec_float result = _cs149_vset_float(1.f);
+  __cs149_vec_float result;
   __cs149_vec_int zero = _cs149_vset_int(0);
   __cs149_vec_int one = _cs149_vset_int(1);
   float clampValue = 9.999999f;
@@ -263,6 +263,7 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
   for (int i = 0; i < N; i += VECTOR_WIDTH) {
     maskInputs = _cs149_init_mask(N - i);
     // zero out everything before
+    result = _cs149_vset_float(1.f);
     maskNonZero = _cs149_init_ones(0);
     maskClamp = _cs149_init_ones(0);
 
