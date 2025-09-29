@@ -1,3 +1,6 @@
 *.ppm
 mandelbrot
+*mandelbrot
+./objs/*
+*.ipynb
 *.o
