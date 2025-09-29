@@ -257,20 +257,16 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
   __cs149_vec_int one = _cs149_vset_int(1);
   float clampValue = 9.999999f;
   __cs149_vec_float clamp = _cs149_vset_float(clampValue);
-  __cs149_mask maskInputs, maskZero, maskNonZero, maskClamp;
+  __cs149_mask maskInputs, maskNonZero, maskClamp;
 
+  // NEED TO DEBUG VECTOR WIDTH ISSUE -- fails on 1 / 2 / 3, but fine for e.g. integer numbers
   for (int i = 0; i < N; i += VECTOR_WIDTH) {
     maskInputs = _cs149_init_mask(N - i);
-
-    _cs149_veq_int(maskZero, e, zero, maskInputs);
     _cs149_vgt_int(maskNonZero, e, zero, maskInputs);
 
     // use C++ pointer notation
     _cs149_vload_float(v, values + i, maskInputs);
     _cs149_vload_int(e, exponents + i, maskInputs);
-
-    // handle y == 0 case
-    _cs149_vset_float(result, 1.f, maskZero);
 
     // handle other cases
     // set result = x for non-zero elements
@@ -286,8 +282,6 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
     }
 
     _cs149_vgt_float(maskClamp, result, clamp, maskInputs);
-    // maskNonZero = _cs149_mask_not(maskZero);
-    // maskClamp = _cs149_mask_and(maskClamp, maskNonZero);
     _cs149_vset_float(result, clampValue, maskClamp);
 
     // set output all at once
