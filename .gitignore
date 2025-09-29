@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 prog3_mandelbrot_ispc/ispc-v1.28.1-linux
+=======
+.DS_Store
+>>>>>>> 22f1f6e48f6c5909aec9d70803478d0f31df8a8b
 *.ppm
 mandelbrot
 *mandelbrot

@@ -42,7 +42,6 @@ int main() {
             values[i] = 1;
         }
     }
-
     // generate a gold version to check results
     for (unsigned int i=0; i<N; i++)
         gold[i] = sqrt(values[i]);
