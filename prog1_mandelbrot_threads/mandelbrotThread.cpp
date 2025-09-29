@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <thread>
+#include <chrono>
+#include <vector>
 
 #include "CycleTimer.h"
 
@@ -23,29 +25,71 @@ extern void mandelbrotSerial(
     int output[]);
 
 
+extern void mandelbrotSerialInterleaved(
+    float x0, float y0, float x1, float y1,
+    int width, int height,
+    int startRow, int skipRows,
+    int maxIterations,
+    int output[]);
+
+
+struct ThreadWork {
+    int startRow;
+    int numRows;
+};
+
+ThreadWork getThreadRowsNaive(int threadId, int height, int numThreads) {
+    int numRows = height / numThreads;
+    int startRow = threadId * numRows;
+
+    // Handle rounding 
+    if (threadId == numThreads - 1){
+        numRows = height - startRow;
+    }
+
+    return {startRow, numRows};
+}
+
 //
 // workerThreadStart --
 //
 // Thread entrypoint.
-void workerThreadStart(WorkerArgs * const args) {
+void workerThreadStartNaive(WorkerArgs * const args) {
 
     // TODO FOR CS149 STUDENTS: Implement the body of the worker
     // thread here. Each thread should make a call to mandelbrotSerial()
     // to compute a part of the output image.  For example, in a
     // program that uses two threads, thread 0 could compute the top
     // half of the image and thread 1 could compute the bottom half.
-    int numRows = args->height / args->numThreads;
-    int startRow = args->threadId * numRows;
-
-    // Handle rounding 
-    if (args->threadId == args->numThreads - 1){
-        numRows = args->height - startRow;
-    }
-
+    auto start = std::chrono::high_resolution_clock::now();
 
     printf("Hello world from thread %d\n", args->threadId);
 
-    mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, startRow, numRows, args->maxIterations, args->output);
+    auto threadWork = getThreadRowsNaive(args->threadId, args->height, args->numThreads);
+
+    mandelbrotSerial(args->x0, args->y0, args->x1, args->y1, args->width, args->height, threadWork.startRow, threadWork.numRows, args->maxIterations, args->output);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    printf("Thread %d took %lld ms\n", args->threadId, ms);
+}
+
+void workerThreadStartInterleaved(WorkerArgs * const args) {
+
+    // TODO FOR CS149 STUDENTS: Implement the body of the worker
+    // thread here. Each thread should make a call to mandelbrotSerial()
+    // to compute a part of the output image.  For example, in a
+    // program that uses two threads, thread 0 could compute the top
+    // half of the image and thread 1 could compute the bottom half.
+    auto start = std::chrono::high_resolution_clock::now();
+
+    printf("Hello world from thread %d\n", args->threadId);
+
+    mandelbrotSerialInterleaved(args->x0, args->y0, args->x1, args->y1, args->width, args->height, args->threadId, args->numThreads, args->maxIterations, args->output);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    printf("Thread %d took %lld ms\n", args->threadId, ms);
 }
 
 //
@@ -93,10 +137,10 @@ void mandelbrotThread(
     // are created and the main application thread is used as a worker
     // as well.
     for (int i=1; i<numThreads; i++) {
-        workers[i] = std::thread(workerThreadStart, &args[i]);
+        workers[i] = std::thread(workerThreadStartInterleaved, &args[i]);
     }
     
-    workerThreadStart(&args[0]);
+    workerThreadStartInterleaved(&args[0]);
 
     // join worker threads
     for (int i=1; i<numThreads; i++) {
