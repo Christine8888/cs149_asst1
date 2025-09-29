@@ -262,6 +262,10 @@ void clampedExpVector(float* values, int* exponents, float* output, int N) {
   // NEED TO DEBUG VECTOR WIDTH ISSUE -- fails on 1 / 2 / 3, but fine for e.g. integer numbers
   for (int i = 0; i < N; i += VECTOR_WIDTH) {
     maskInputs = _cs149_init_mask(N - i);
+    // zero out everything before
+    maskNonZero = _cs149_init_ones(0);
+    maskClamp = _cs149_init_ones(0);
+
     _cs149_vgt_int(maskNonZero, e, zero, maskInputs);
 
     // use C++ pointer notation
