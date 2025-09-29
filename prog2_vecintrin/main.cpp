@@ -227,7 +227,7 @@ __cs149_mask _cs149_init_mask(int remaining) {
 //
 // For each element, compute values[i]^exponents[i] and clamp value to
 // 9.999.  Store result in output.
-void b(float* values, int* exponents, float* output, int N) {
+void clampedExpSerial(float* values, int* exponents, float* output, int N) {
   for (int i=0; i<N; i++) {
     float x = values[i];
     int y = exponents[i];
