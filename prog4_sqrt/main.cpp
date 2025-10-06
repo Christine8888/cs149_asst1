@@ -35,12 +35,12 @@ int main() {
         
         // starter code populates array with random input values
         // values[i] = .001f + 2.998f * static_cast<float>(rand()) / RAND_MAX;
-        // values[i] = 2.9999;
-        if (i % 8 == 0) {
-            values[i] = 2.9999;
-        } else {
-            values[i] = 1;
-        }
+        values[i] = 2.9999;
+        // if (i % 8 == 0) {
+        //     values[i] = 2.9999;
+        // } else {
+        //     values[i] = 1;
+        // }
     }
     // generate a gold version to check results
     for (unsigned int i=0; i<N; i++)
